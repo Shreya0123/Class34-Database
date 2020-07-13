@@ -1,6 +1,11 @@
 var ball;
+var db, position, dbref;
 
 function setup(){
+
+    db = firebase.database();
+    dbref = db.ref("ball/position");
+    dbref.on("value", readxy, showerr);
     createCanvas(500,500);
     ball = createSprite(250,250,10,10);
     ball.shapeColor = "red";
@@ -24,6 +29,19 @@ function draw(){
 }
 
 function changePosition(x,y){
-    ball.x = ball.x + x;
-    ball.y = ball.y + y;
+
+    db.ref("ball/position").set({
+        'x': position.x +x,
+        'y': position.y +y
+    })
+}
+
+function readxy(data){
+    position = data.val();
+    ball.x = position.x;
+    ball.y = position.y;
+}
+
+function showerr(){
+    console.log("shoow if any errors");
 }
